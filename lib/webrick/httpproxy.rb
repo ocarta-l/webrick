@@ -211,22 +211,30 @@ module WEBrick
         p "Gem HTTPProxyServer - do_CONNECT - after ensure"
       end
 
+      p "Gem HTTPProxyServer - do_CONNECT - before second begin"
       begin
+        p "Gem HTTPProxyServer - do_CONNECT - inside second begin"
         while fds = IO::select([ua, os])
+          p "loop?"
           if fds[0].member?(ua)
             buf = ua.readpartial(1024);
+            p "CONNECT: #{buf.bytesize} byte from User-Agent"
             @logger.debug("CONNECT: #{buf.bytesize} byte from User-Agent")
             os.write(buf)
           elsif fds[0].member?(os)
             buf = os.readpartial(1024);
+            p "CONNECT: #{buf.bytesize} byte from #{host}:#{port}"
             @logger.debug("CONNECT: #{buf.bytesize} byte from #{host}:#{port}")
             ua.write(buf)
           end
         end
       rescue
+        p "Gem HTTPProxyServer - do_CONNECT - rescue second begin"
+        p "CONNECT #{host}:#{port}: closed"
         os.close
         @logger.debug("CONNECT #{host}:#{port}: closed")
       end
+      p "Gem HTTPProxyServer - do_CONNECT - after second begin"
 
       raise HTTPStatus::EOFError
     end
