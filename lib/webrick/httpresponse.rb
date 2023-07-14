@@ -237,13 +237,19 @@ module WEBrick
 
     def send_response(socket) # :nodoc:
       begin
+        p "Response - first begin"
         setup_header()
+        p "Response - second begin"
         send_header(socket)
+        p "Response - thrid begin"
         send_body(socket)
+        p "Response - fourth begin"
       rescue Errno::EPIPE, Errno::ECONNRESET, Errno::ENOTCONN => ex
+        p "Rescue 1: #{ex}"
         @logger.debug(ex)
         @keep_alive = false
       rescue Exception => ex
+        p "Rescue 2: #{ex}"
         @logger.error(ex)
         @keep_alive = false
       end
