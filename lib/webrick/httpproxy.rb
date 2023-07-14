@@ -223,8 +223,8 @@ module WEBrick
             buf = ua.readpartial(1024);
             p "CONNECT: #{buf.bytesize} byte from User-Agent"
             @logger.debug("CONNECT: #{buf.bytesize} byte from User-Agent")
-            os.write(buf)
-            p "after write os"
+            a = os.write(buf)
+            p "after write os [#{a}]"
           elsif fds[0].member?(os)
             buf = os.readpartial(1024);
             p "CONNECT: #{buf.bytesize} byte from #{host}:#{port}"
