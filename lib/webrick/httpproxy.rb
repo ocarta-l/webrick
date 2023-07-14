@@ -218,6 +218,7 @@ module WEBrick
           p "loop?"
           p os.inspect
           p ua.inspect
+          p fds.inspect
           if fds[0].member?(ua)
             buf = ua.readpartial(1024);
             p "CONNECT: #{buf.bytesize} byte from User-Agent"
