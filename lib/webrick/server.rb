@@ -259,9 +259,12 @@ module WEBrick
     def accept_client(svr)
       case sock = svr.to_io.accept_nonblock(exception: false)
       when :wait_readable
+        p "Server - Case - :wait_readable"
         nil
       else
+        p "Server - Case - else"
         if svr.respond_to?(:start_immediately)
+          p "Server - Case - :start_immediately"
           sock = OpenSSL::SSL::SSLSocket.new(sock, ssl_context)
           sock.sync_close = true
           # we cannot do OpenSSL::SSL::SSLSocket#accept here because
@@ -272,9 +275,11 @@ module WEBrick
       end
     rescue Errno::ECONNRESET, Errno::ECONNABORTED,
            Errno::EPROTO, Errno::EINVAL
+      p "Server - Rescue - 1"
       nil
     rescue StandardError => ex
       msg = "#{ex.class}: #{ex.message}\n\t#{ex.backtrace[0]}"
+      p "Server - Rescue - 2 - #{msg}"
       @logger.error msg
       nil
     end
