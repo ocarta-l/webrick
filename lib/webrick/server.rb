@@ -184,6 +184,7 @@ module WEBrick
                     unless config[:DoNotReverseLookup].nil?
                       sock.do_not_reverse_lookup = !!config[:DoNotReverseLookup]
                     end
+                    p "SOCKET - #{sock.inspect}"
                     th = start_thread(sock, &block)
                     th[:WEBrickThread] = true
                     thgroup.add(th)
