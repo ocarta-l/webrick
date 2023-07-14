@@ -360,18 +360,23 @@ module WEBrick
 
     def send_header(socket) # :nodoc:
       if @http_version.major > 0
+        p "Send_header 1"
         data = status_line().dup
         @header.each{|key, value|
           tmp = key.gsub(/\bwww|^te$|\b\w/){ $&.upcase }
           data << "#{tmp}: #{check_header(value)}" << CRLF
         }
+        p "Send_header 2"
         @cookies.each{|cookie|
           data << "Set-Cookie: " << check_header(cookie.to_s) << CRLF
         }
+        p "Send_header 3"
         data << CRLF
         socket.write(data)
+        p "Send_header 4"
       end
     rescue InvalidHeader => e
+      p "Rescue - send_header - #{e.inspect}"
       @header.clear
       @cookies.clear
       set_error e
