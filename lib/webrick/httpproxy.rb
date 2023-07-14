@@ -217,6 +217,7 @@ module WEBrick
         while fds = IO::select([ua, os])
           p "loop?"
           p os.inspect
+          p ua.inspect
           if fds[0].member?(ua)
             buf = ua.readpartial(1024);
             p "CONNECT: #{buf.bytesize} byte from User-Agent"
@@ -229,6 +230,7 @@ module WEBrick
             @logger.debug("CONNECT: #{buf.bytesize} byte from #{host}:#{port}")
             ua.write(buf)
           end
+          p "end loop?"
         end
       rescue
         p "Gem HTTPProxyServer - do_CONNECT - rescue second begin"
