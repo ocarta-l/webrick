@@ -145,8 +145,10 @@ module WEBrick
       host, port = req.unparsed_uri.split(":", 2)
       # Proxy authentication for upstream proxy server
       if proxy = proxy_uri(req, res)
+        p "Gem HTTPProxyServer - do_CONNECT - first if"
         proxy_request_line = "CONNECT #{host}:#{port} HTTP/1.0"
         if proxy.userinfo
+          p "Gem HTTPProxyServer - do_CONNECT - second if"
           credentials = "Basic " + [proxy.userinfo].pack("m0")
         end
         host, port = proxy.host, proxy.port
@@ -154,39 +156,50 @@ module WEBrick
 
       p "Gem HTTPProxyServer - do_CONNECT - before begin"
       begin
+        p "CONNECT: upstream proxy is `#{host}:#{port}'."
         @logger.debug("CONNECT: upstream proxy is `#{host}:#{port}'.")
         os = TCPSocket.new(host, port)     # origin server
 
         if proxy
+          p "CONNECT: sending a Request-Line"
           @logger.debug("CONNECT: sending a Request-Line")
           os << proxy_request_line << CRLF
+          p "CONNECT: > #{proxy_request_line}"
           @logger.debug("CONNECT: > #{proxy_request_line}")
           if credentials
+            p "CONNECT: sending credentials"
             @logger.debug("CONNECT: sending credentials")
             os << "Proxy-Authorization: " << credentials << CRLF
           end
           os << CRLF
           proxy_status_line = os.gets(LF)
+          p "CONNECT: read Status-Line from the upstream server"
+          p "CONNECT: < #{proxy_status_line}"
           @logger.debug("CONNECT: read Status-Line from the upstream server")
           @logger.debug("CONNECT: < #{proxy_status_line}")
           if %r{^HTTP/\d+\.\d+\s+200\s*} =~ proxy_status_line
+            p "Gem HTTPProxyServer - do_CONNECT - regex match"
             while line = os.gets(LF)
+              p "loop?"
               break if /\A(#{CRLF}|#{LF})\z/om =~ line
             end
           else
+            p "Gem HTTPProxyServer - do_CONNECT - regex dont"
             raise HTTPStatus::BadGateway
           end
         end
+        p "CONNECT #{host}:#{port}: succeeded"
         @logger.debug("CONNECT #{host}:#{port}: succeeded")
         res.status = HTTPStatus::RC_OK
       rescue => ex
-      p "Gem HTTPProxyServer - do_CONNECT - rescue begin"
+        p "CONNECT #{host}:#{port}: failed `#{ex.message}'"
         @logger.debug("CONNECT #{host}:#{port}: failed `#{ex.message}'")
         res.set_error(ex)
         raise HTTPStatus::EOFError
       ensure
         p "Gem HTTPProxyServer - do_CONNECT - begin ensure"
         if handler = @config[:ProxyContentHandler]
+          p "Gem HTTPProxyServer - do_CONNECT - begin ensure if"
           handler.call(req, res)
         end
         res.send_response(ua)
@@ -194,7 +207,7 @@ module WEBrick
 
         # Should clear request-line not to send the response twice.
         # see: HTTPServer#run
-        req.parse(NullReader) rescue nil
+        req.parse(NullReader) rescue p "Gem HTTPProxyServer - do_CONNECT - rescue"
         p "Gem HTTPProxyServer - do_CONNECT - after ensure"
       end
 
