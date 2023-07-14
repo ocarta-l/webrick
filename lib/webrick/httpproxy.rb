@@ -132,12 +132,16 @@ module WEBrick
 
     def do_CONNECT(req, res)
       # Proxy Authentication
+      p "Gem HTTPProxyServer - do_CONNECT - before"
+      @logger.debug("Test")
       proxy_auth(req, res)
 
+      p "Gem HTTPProxyServer - do_CONNECT - after proxy_auth"
       ua = Thread.current[:WEBrickSocket]  # User-Agent
       raise HTTPStatus::InternalServerError,
         "[BUG] cannot get socket" unless ua
 
+      p "Gem HTTPProxyServer - do_CONNECT - after raise"
       host, port = req.unparsed_uri.split(":", 2)
       # Proxy authentication for upstream proxy server
       if proxy = proxy_uri(req, res)
@@ -148,6 +152,7 @@ module WEBrick
         host, port = proxy.host, proxy.port
       end
 
+      p "Gem HTTPProxyServer - do_CONNECT - before begin"
       begin
         @logger.debug("CONNECT: upstream proxy is `#{host}:#{port}'.")
         os = TCPSocket.new(host, port)     # origin server
@@ -175,10 +180,12 @@ module WEBrick
         @logger.debug("CONNECT #{host}:#{port}: succeeded")
         res.status = HTTPStatus::RC_OK
       rescue => ex
+      p "Gem HTTPProxyServer - do_CONNECT - rescue begin"
         @logger.debug("CONNECT #{host}:#{port}: failed `#{ex.message}'")
         res.set_error(ex)
         raise HTTPStatus::EOFError
       ensure
+        p "Gem HTTPProxyServer - do_CONNECT - begin ensure"
         if handler = @config[:ProxyContentHandler]
           handler.call(req, res)
         end
@@ -188,6 +195,7 @@ module WEBrick
         # Should clear request-line not to send the response twice.
         # see: HTTPServer#run
         req.parse(NullReader) rescue nil
+        p "Gem HTTPProxyServer - do_CONNECT - after ensure"
       end
 
       begin
