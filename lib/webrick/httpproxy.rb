@@ -202,8 +202,11 @@ module WEBrick
           p "Gem HTTPProxyServer - do_CONNECT - begin ensure if"
           handler.call(req, res)
         end
+        p "Gem HTTPProxyServer - do_CONNECT - 1"
         res.send_response(ua)
+        p "Gem HTTPProxyServer - do_CONNECT - 2"
         access_log(@config, req, res)
+        p "Gem HTTPProxyServer - do_CONNECT - 3"
 
         # Should clear request-line not to send the response twice.
         # see: HTTPServer#run
