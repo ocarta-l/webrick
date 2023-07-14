@@ -180,6 +180,7 @@ module WEBrick
                 end
                 svrs[0].each{|svr|
                   @tokens.pop          # blocks while no token is there.
+                    p "SVR - #{svr.inspect}"
                   if sock = accept_client(svr)
                     unless config[:DoNotReverseLookup].nil?
                       sock.do_not_reverse_lookup = !!config[:DoNotReverseLookup]
@@ -189,6 +190,7 @@ module WEBrick
                     th[:WEBrickThread] = true
                     thgroup.add(th)
                   else
+                    p "NOT SOCKET"
                     @tokens.push(nil)
                   end
                 }
