@@ -216,11 +216,13 @@ module WEBrick
         p "Gem HTTPProxyServer - do_CONNECT - inside second begin"
         while fds = IO::select([ua, os])
           p "loop?"
+          p os.inspect
           if fds[0].member?(ua)
             buf = ua.readpartial(1024);
             p "CONNECT: #{buf.bytesize} byte from User-Agent"
             @logger.debug("CONNECT: #{buf.bytesize} byte from User-Agent")
             os.write(buf)
+            p "after write os"
           elsif fds[0].member?(os)
             buf = os.readpartial(1024);
             p "CONNECT: #{buf.bytesize} byte from #{host}:#{port}"
