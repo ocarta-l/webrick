@@ -496,7 +496,7 @@ module WEBrick
       end
       str.sub!(%r{\A/+}o, '/')
       p "parse_uri - 1"
-      uri = URI::parse(str)
+      uri = URI::parse(URI::encode(str))
       p "parse_uri - 2"
       return uri if uri.absolute?
       if @forwarded_host
