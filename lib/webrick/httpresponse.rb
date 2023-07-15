@@ -404,6 +404,7 @@ module WEBrick
     #   res.set_redirect WEBrick::HTTPStatus::TemporaryRedirect
 
     def set_redirect(status, url)
+      p "GEM HTTPResponse - set_redirect"
       url = URI(url).to_s
       @body = "<HTML><A HREF=\"#{url}\">#{url}</A>.</HTML>\n"
       @header['location'] = url
