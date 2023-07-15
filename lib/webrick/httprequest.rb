@@ -232,6 +232,7 @@ module WEBrick
         @path_info = @path.dup
         p "parse - 8"
       rescue
+        p "rescue parse"
         raise HTTPStatus::BadRequest, "bad URI `#{@unparsed_uri}'."
       end
 
