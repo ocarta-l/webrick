@@ -498,7 +498,7 @@ module WEBrick
       p "parse_uri - 1"
       p "str - #{str}"
       uri = URI::parse(CGI.escape(str))
-      p "parse_uri - 2"
+      p "parse_uri - 2 - #{uri.absolute?}"
       return uri if uri.absolute?
       if @forwarded_host
         host, port = @forwarded_host, @forwarded_port
