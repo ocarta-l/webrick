@@ -217,9 +217,9 @@ module WEBrick
         setup_forwarded_info
         p "parse - 1"
         @request_uri = parse_uri(@unparsed_uri)
-        p "parse - 2"
+        p "parse - 2 - #{@request_uri}"
         @path = HTTPUtils::unescape(@request_uri.path)
-        p "parse - 3"
+        p "parse - 3 - #{@path}"
         @path = HTTPUtils::normalize_path(@path)
         p "parse - 4"
         @host = @request_uri.host
