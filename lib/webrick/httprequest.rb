@@ -215,14 +215,22 @@ module WEBrick
 
       begin
         setup_forwarded_info
+        p "parse - 1"
         @request_uri = parse_uri(@unparsed_uri)
+        p "parse - 2"
         @path = HTTPUtils::unescape(@request_uri.path)
+        p "parse - 3"
         @path = HTTPUtils::normalize_path(@path)
+        p "parse - 4"
         @host = @request_uri.host
+        p "parse - 5"
         @port = @request_uri.port
+        p "parse - 6"
         @query_string = @request_uri.query
+        p "parse - 7"
         @script_name = ""
         @path_info = @path.dup
+        p "parse - 8"
       rescue
         raise HTTPStatus::BadRequest, "bad URI `#{@unparsed_uri}'."
       end
