@@ -495,7 +495,9 @@ module WEBrick
         str = HTTPUtils::escape8bit(str)
       end
       str.sub!(%r{\A/+}o, '/')
+      p "parse_uri - 1"
       uri = URI::parse(str)
+      p "parse_uri - 2"
       return uri if uri.absolute?
       if @forwarded_host
         host, port = @forwarded_host, @forwarded_port
